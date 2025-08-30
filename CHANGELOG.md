@@ -2,6 +2,14 @@
 
 All notable changes to the MobileSchedule app will be documented in this file.
 
+## [1.0.2] - 2025-08-30
+
+### Added
+- Created `run_app.sh` script to automate emulator setup, app installation, and launch process.
+
+### Fixed
+- Addressed persistent emulator UI freezes by forcing a stable software GPU renderer (`swiftshader_indirect`) in the `run_app.sh` script.
+
 ## [1.0.1] - 2025-08-30
 
 ### Fixed
