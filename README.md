@@ -27,6 +27,14 @@ The codebase is organized into several key components:
 - `NotificationActivity.kt`: The activity that is launched when a user taps on a notification. It displays event details and allows the user to dismiss the alarm.
 - **Layouts (`res/layout/`)**: XML files defining the UI for the main calendar (`activity_main.xml`), the notification screen (`activity_notification.xml`), and individual calendar day cells (`grid_item.xml`).
 
+## GitHub Repository
+
+The MobileSchedule project has been uploaded to GitHub and is available at:
+
+[https://github.com/ukoquique-proves/firstMobileAPK](https://github.com/ukoquique-proves/firstMobileAPK)
+
+You can clone the repository, contribute, or report issues through this link.
+
 ## Technical Details & Dependencies
 
 - **Language**: Kotlin
