@@ -1,0 +1,21 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+id calendar_grid
+id date_text
+id dismiss_button
+id event_description_text
+id linearLayout
+id month_year
+id next_month
+id prev_month
+layout activity_main
+layout activity_notification
+layout grid_item
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Theme.MobileSchedule
+xml backup_rules
+xml data_extraction_rules
