@@ -1,15 +1,15 @@
 package com.example.mobileschedule
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.GridView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import android.content.Context
-import android.content.Intent
 import com.example.mobileschedule.databinding.ActivityMainBinding
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -19,7 +19,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val calendar = Calendar.getInstance()
-    private var events = mutableListOf<Event>()
+    private var events = listOf<Event>()
+    private val viewModel: CalendarViewModel by viewModels { 
+        CalendarViewModelFactory(EventRepository(this))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +30,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupDayOfWeekGrid()
-        loadEvents()
-        updateCalendar()
+
+        viewModel.events.observe(this) {
+            events = it
+            updateCalendar()
+        }
 
         binding.prevMonth.setOnClickListener {
             calendar.add(Calendar.MONTH, -1)
@@ -43,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         binding.calendarGrid.setOnItemClickListener { _, _, position, _ ->
             val selectedDate = (binding.calendarGrid.adapter as CalendarAdapter).getItem(position)
             if (selectedDate != null) {
-                val eventsForDay = events.filter { isSameDay(it.date, selectedDate) }
+                val eventsForDay = viewModel.events.value?.filter { isSameDay(it.date, selectedDate) } ?: emptyList()
 
                 if (eventsForDay.isNotEmpty()) {
                     showActionMenuDialog(selectedDate, eventsForDay)
@@ -68,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> showViewEventDialog(date, eventsForDay)
-                    1 -> showDeleteConfirmationDialog(date, eventsForDay)
+                    1 -> showDeleteConfirmationDialog(date)
                 }
             }
             .setNegativeButton("Cancel", null)
@@ -87,14 +93,12 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showDeleteConfirmationDialog(date: Date, eventsForDay: List<Event>) {
+    private fun showDeleteConfirmationDialog(date: Date) {
         AlertDialog.Builder(this)
             .setTitle("Delete Events")
             .setMessage("Are you sure you want to delete all events for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date)}?")
             .setPositiveButton("Delete") { _, _ ->
-                events.removeAll(eventsForDay)
-                saveEvents()
-                updateCalendar()
+                viewModel.deleteEventsForDay(date)
             }
             .setNegativeButton("Cancel", null)
             .show()
@@ -111,10 +115,8 @@ class MainActivity : AppCompatActivity() {
             val eventDescription = input.text.toString()
             if (eventDescription.isNotEmpty()) {
                 val event = Event(date, eventDescription)
-                events.add(event)
-                saveEvents()
+                viewModel.addEvent(event)
                 // scheduleNotification(event) // Temporarily disabled due to permission issues on modern Android
-                updateCalendar()
             }
         }
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
@@ -159,24 +161,6 @@ class MainActivity : AppCompatActivity() {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
     }
 
-    private fun saveEvents() {
-        val sharedPreferences = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val gson = Gson()
-        val json = gson.toJson(events)
-        editor.putString("events", json)
-        editor.apply()
-    }
-
-    private fun loadEvents() {
-        val sharedPreferences = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString("events", null)
-        val type = object : TypeToken<MutableList<Event>>() {}.type
-        if (json != null) {
-            events = gson.fromJson(json, type)
-        }
-    }
 
     private fun scheduleNotification(event: Event) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
