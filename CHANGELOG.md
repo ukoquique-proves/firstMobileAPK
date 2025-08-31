@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `hour` field to `Event` class to allow events to be scheduled at specific times within a day.
 - Updated UI to include a time picker for selecting event hours when adding new events.
 - Modified event display to show the hour alongside the event description.
+- Implemented color coding for events in the calendar: red for events within 2 days, orange for events within 2 weeks, and yellow for events further out.
 
 ## [1.0.2] - 2025-08-30
 
