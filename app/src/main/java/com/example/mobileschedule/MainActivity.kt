@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mobileschedule.databinding.ActivityMainBinding
+import com.example.mobileschedule.DateUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         binding.calendarGrid.setOnItemClickListener { _, _, position, _ ->
             val selectedDate = (binding.calendarGrid.adapter as CalendarAdapter).getItem(position)
             if (selectedDate != null) {
-                val eventsForDay = viewModel.events.value?.filter { isSameDay(it.date, selectedDate) } ?: emptyList()
+                val eventsForDay = viewModel.events.value?.filter { DateUtils.isSameDay(it.date, selectedDate) } ?: emptyList()
 
                 if (eventsForDay.isNotEmpty()) {
                     showActionMenuDialog(selectedDate, eventsForDay)
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         val options = arrayOf("View Event(s)", "Delete Event(s)")
 
         AlertDialog.Builder(this)
-            .setTitle("Action for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date)}")
+            .setTitle("Action for ${DateUtils.formatFullDate(date)}")
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> showViewEventDialog(date, eventsForDay)
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     private fun showViewEventDialog(date: Date, eventsForDay: List<Event>) {
         val eventDescriptions = eventsForDay.joinToString("\n- ") { it.description }
         AlertDialog.Builder(this)
-            .setTitle("Events for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date)}")
+            .setTitle("Events for ${DateUtils.formatFullDate(date)}")
             .setMessage("- $eventDescriptions")
             .setPositiveButton("Add New Event") { _, _ ->
                 showAddEventDialog(date)
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity() {
     private fun showDeleteConfirmationDialog(date: Date) {
         AlertDialog.Builder(this)
             .setTitle("Delete Events")
-            .setMessage("Are you sure you want to delete all events for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date)}?")
+            .setMessage("Are you sure you want to delete all events for ${DateUtils.formatFullDate(date)}?")
             .setPositiveButton("Delete") { _, _ ->
                 viewModel.deleteEventsForDay(date)
             }
@@ -116,7 +117,8 @@ class MainActivity : AppCompatActivity() {
             if (eventDescription.isNotEmpty()) {
                 val event = Event(date, eventDescription)
                 viewModel.addEvent(event)
-                // scheduleNotification(event) // Temporarily disabled due to permission issues on modern Android
+                // Notification scheduling is temporarily disabled due to permission issues on modern Android versions.
+                // scheduleNotification(event)
             }
         }
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
@@ -125,9 +127,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateCalendar() {
-        val sdf = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
-        binding.monthYear.text = sdf.format(calendar.time)
+        updateMonthYearDisplay()
+        val days = calculateCalendarDays()
+        updateCalendarGrid(days)
+        updateNavigationButtons()
+    }
 
+    private fun updateMonthYearDisplay() {
+        binding.monthYear.text = DateUtils.formatMonthYear(calendar.time)
+    }
+
+    private fun calculateCalendarDays(): List<Date> {
         val days = ArrayList<Date>()
         val monthCalendar = calendar.clone() as Calendar
         monthCalendar.set(Calendar.DAY_OF_MONTH, 1)
@@ -138,37 +148,39 @@ class MainActivity : AppCompatActivity() {
             days.add(monthCalendar.time)
             monthCalendar.add(Calendar.DAY_OF_MONTH, 1)
         }
+        return days
+    }
 
+    private fun updateCalendarGrid(days: List<Date>) {
         binding.calendarGrid.adapter = CalendarAdapter(this, days, events)
+    }
 
-        // Navigation logic
+    private fun updateNavigationButtons() {
         val currentMonth = Calendar.getInstance()
-        binding.prevMonth.isEnabled = !isSameMonth(calendar, currentMonth)
+        binding.prevMonth.isEnabled = !DateUtils.isSameMonth(calendar, currentMonth)
 
         val twoMonthsLater = Calendar.getInstance()
         twoMonthsLater.add(Calendar.MONTH, 2)
-        binding.nextMonth.isEnabled = !isSameMonth(calendar, twoMonthsLater)
+        binding.nextMonth.isEnabled = !DateUtils.isSameMonth(calendar, twoMonthsLater)
     }
 
     private fun isSameDay(date1: Date, date2: Date): Boolean {
-        val cal1 = Calendar.getInstance().apply { time = date1 }
-        val cal2 = Calendar.getInstance().apply { time = date2 }
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+        return DateUtils.isSameDay(date1, date2)
     }
 
     private fun isSameMonth(cal1: Calendar, cal2: Calendar): Boolean {
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
+        return DateUtils.isSameMonth(cal1, cal2)
     }
 
-
+    // Notification scheduling is temporarily disabled due to permission issues on modern Android versions.
+    // This function is kept for future reference when permissions are handled.
     private fun scheduleNotification(event: Event) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
         val intent = Intent(this, NotificationReceiver::class.java)
         intent.putExtra("event_description", event.description)
 
         val uniqueId = (event.hashCode() + System.currentTimeMillis()).toInt()
-                val pendingIntent = android.app.PendingIntent.getBroadcast(this, uniqueId, intent, android.app.PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = android.app.PendingIntent.getBroadcast(this, uniqueId, intent, android.app.PendingIntent.FLAG_IMMUTABLE)
 
         val calendar = Calendar.getInstance()
         calendar.time = event.date

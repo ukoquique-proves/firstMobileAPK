@@ -1,5 +1,7 @@
 package com.example.mobileschedule
 
+// This class is currently unused as notification scheduling is disabled due to permission issues on modern Android.
+// Kept for future reference when permissions are properly handled.
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mobileschedule.databinding.ActivityNotificationBinding
