@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modified event display to show the hour alongside the event description.
 - Implemented color coding for events in the calendar: red for events within 2 days, orange for events within 2 weeks, and yellow for events further out.
 
+### Fixed
+- Fixed virtual keyboard not disappearing when clicking OK or Cancel in the event creation dialog.
+
 ## [1.0.2] - 2025-08-30
 
 ### Added

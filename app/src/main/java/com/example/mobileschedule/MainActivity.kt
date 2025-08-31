@@ -118,7 +118,6 @@ class MainActivity : AppCompatActivity() {
         // Add a time picker for hour selection
         val timePicker = android.widget.TimePicker(this)
         timePicker.setIs24HourView(true)
-        builder.setView(timePicker)
         val linearLayout = android.widget.LinearLayout(this)
         linearLayout.orientation = android.widget.LinearLayout.VERTICAL
         linearLayout.addView(input)
@@ -131,13 +130,25 @@ class MainActivity : AppCompatActivity() {
                 val eventHour = timePicker.hour
                 val event = Event(date, eventDescription, eventHour)
                 viewModel.addEvent(event)
+                // Hide the virtual keyboard
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(input.windowToken, 0)
                 // Notification scheduling is temporarily disabled due to permission issues on modern Android versions.
                 // scheduleNotification(event)
             }
         }
-        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+        builder.setNegativeButton("Cancel") { dialog, _ -> 
+            // Hide the virtual keyboard on cancel as well
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(input.windowToken, 0)
+            dialog.cancel()
+        }
 
         builder.show()
+        // Ensure keyboard is shown initially for input
+        input.requestFocus()
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+        imm.showSoftInput(input, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun updateCalendar() {
