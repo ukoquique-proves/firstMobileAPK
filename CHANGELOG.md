@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extracted date formatting and comparison logic into `DateUtils` utility class for consistency.
 - Marked unused code and files (`Date.kt`, notification-related code) with comments to indicate they are disabled or deprecated, enhancing code clarity.
 
+### Added
+- Added `hour` field to `Event` class to allow events to be scheduled at specific times within a day.
+- Updated UI to include a time picker for selecting event hours when adding new events.
+- Modified event display to show the hour alongside the event description.
+
 ## [1.0.2] - 2025-08-30
 
 ### Added

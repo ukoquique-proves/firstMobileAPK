@@ -112,10 +112,21 @@ class MainActivity : AppCompatActivity() {
         val input = EditText(this)
         builder.setView(input)
 
+        // Add a time picker for hour selection
+        val timePicker = android.widget.TimePicker(this)
+        timePicker.setIs24HourView(true)
+        builder.setView(timePicker)
+        val linearLayout = android.widget.LinearLayout(this)
+        linearLayout.orientation = android.widget.LinearLayout.VERTICAL
+        linearLayout.addView(input)
+        linearLayout.addView(timePicker)
+        builder.setView(linearLayout)
+
         builder.setPositiveButton("OK") { _, _ ->
             val eventDescription = input.text.toString()
             if (eventDescription.isNotEmpty()) {
-                val event = Event(date, eventDescription)
+                val eventHour = timePicker.hour
+                val event = Event(date, eventDescription, eventHour)
                 viewModel.addEvent(event)
                 // Notification scheduling is temporarily disabled due to permission issues on modern Android versions.
                 // scheduleNotification(event)
