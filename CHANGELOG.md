@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-08-30
+
+### Added
+- **Event Timing**: Added an `hour` field to the `Event` class to allow events to be scheduled at specific times.
+- **Time Picker**: Updated the UI to include a time picker for selecting event hours when adding new events.
+- **Event Display**: Modified the event display to show the hour alongside the event description.
+- **Event Color Coding**: Implemented color coding for events in the calendar view:
+  - Red for events within 2 days.
+  - Orange for events within 2 weeks.
+  - Yellow for events further out.
+
+### Changed
+- **Clean Architecture**: Refactored the codebase to adhere to clean architecture principles by introducing an `EventRepository` and `CalendarViewModel`.
+- **Code Readability**: Split large functions in `MainActivity` into smaller, single-responsibility functions.
+- **Date Handling**: Extracted date formatting and comparison logic into a `DateUtils` utility class for consistency.
+- **Code Cleanup**: Marked unused code and files (`Date.kt`, notification-related code) with comments to indicate they are disabled or deprecated.
+
+### Fixed
+- **Virtual Keyboard**: Fixed an issue where the virtual keyboard would not disappear after creating an event. The dialog now correctly hides the keyboard on dismissal.
+- **Build Errors**: Resolved compilation errors related to view binding in `CalendarAdapter`.
+
 ### Changed
 - Refactored codebase to adhere to clean architecture principles by introducing `EventRepository` and `CalendarViewModel`.
 - Split large `updateCalendar()` function in `MainActivity` into smaller, single-responsibility functions.
@@ -20,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented color coding for events in the calendar: red for events within 2 days, orange for events within 2 weeks, and yellow for events further out.
 
 ### Fixed
-- Fixed virtual keyboard not disappearing when clicking OK or Cancel in the event creation dialog.
+- Fixed virtual keyboard not disappearing when clicking OK or Cancel in the event creation dialog, with enhanced handling to ensure it hides on dialog dismissal.
 
 ## [1.0.2] - 2025-08-30
 

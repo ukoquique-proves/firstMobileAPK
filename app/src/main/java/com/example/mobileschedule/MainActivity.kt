@@ -144,11 +144,18 @@ class MainActivity : AppCompatActivity() {
             dialog.cancel()
         }
 
-        builder.show()
-        // Ensure keyboard is shown initially for input
-        input.requestFocus()
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-        imm.showSoftInput(input, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            input.requestFocus()
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.showSoftInput(input, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        }
+        dialog.setOnDismissListener {
+            // Ensure keyboard is hidden when dialog is dismissed
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(input.windowToken, 0)
+        }
+        dialog.show()
     }
 
     private fun updateCalendar() {
