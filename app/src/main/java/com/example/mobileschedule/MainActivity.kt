@@ -83,7 +83,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showViewEventDialog(date: Date, eventsForDay: List<Event>) {
-        val eventDescriptions = eventsForDay.joinToString("\n- ") { it.description }
+        val eventDescriptions = eventsForDay.joinToString("\n- ") { event -> 
+            val hourStr = if (event.hour in 0..23) event.hour.toString().padStart(2, '0') + ":00" else "00:00"
+            "$hourStr - ${event.description}"
+        }
         AlertDialog.Builder(this)
             .setTitle("Events for ${DateUtils.formatFullDate(date)}")
             .setMessage("- $eventDescriptions")
