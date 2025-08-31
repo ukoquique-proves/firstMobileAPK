@@ -4,11 +4,19 @@
         "source": "com.example.mobileschedule.app-main-6:/layout/grid_item.xml"
     },
     {
-        "merged": "com.example.mobileschedule.app-mergeDebugResources-3:/layout/activity_notification.xml",
-        "source": "com.example.mobileschedule.app-main-6:/layout/activity_notification.xml"
+        "merged": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-mergeDebugResources-3:/layout/day_of_week_item.xml",
+        "source": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-main-6:/layout/day_of_week_item.xml"
     },
     {
-        "merged": "com.example.mobileschedule.app-mergeDebugResources-3:/layout/activity_main.xml",
-        "source": "com.example.mobileschedule.app-main-6:/layout/activity_main.xml"
+        "merged": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-mergeDebugResources-3:/layout/activity_main.xml",
+        "source": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-main-6:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-mergeDebugResources-3:/layout/activity_notification.xml",
+        "source": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-main-6:/layout/activity_notification.xml"
+    },
+    {
+        "merged": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-mergeDebugResources-3:/layout/grid_item.xml",
+        "source": "/root/.gradle/daemon/8.2/com.example.mobileschedule.app-main-6:/layout/grid_item.xml"
     }
 ]

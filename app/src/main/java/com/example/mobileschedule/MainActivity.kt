@@ -1,6 +1,7 @@
 package com.example.mobileschedule
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupDayOfWeekGrid()
         loadEvents()
         updateCalendar()
 
@@ -44,20 +46,58 @@ class MainActivity : AppCompatActivity() {
                 val eventsForDay = events.filter { isSameDay(it.date, selectedDate) }
 
                 if (eventsForDay.isNotEmpty()) {
-                    val eventDescriptions = eventsForDay.joinToString("\n- ") { it.description }
-                    AlertDialog.Builder(this)
-                        .setTitle("Events for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(selectedDate)}")
-                        .setMessage("- $eventDescriptions")
-                        .setPositiveButton("Add New Event") { _, _ ->
-                            showAddEventDialog(selectedDate)
-                        }
-                        .setNegativeButton("Close", null)
-                        .show()
+                    showActionMenuDialog(selectedDate, eventsForDay)
                 } else {
                     showAddEventDialog(selectedDate)
                 }
             }
         }
+    }
+
+    private fun setupDayOfWeekGrid() {
+        val daysOfWeek = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+        val dayOfWeekAdapter = ArrayAdapter(this, R.layout.day_of_week_item, daysOfWeek)
+        binding.dayOfWeekGrid.adapter = dayOfWeekAdapter
+    }
+
+    private fun showActionMenuDialog(date: Date, eventsForDay: List<Event>) {
+        val options = arrayOf("View Event(s)", "Delete Event(s)")
+
+        AlertDialog.Builder(this)
+            .setTitle("Action for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date)}")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showViewEventDialog(date, eventsForDay)
+                    1 -> showDeleteConfirmationDialog(date, eventsForDay)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showViewEventDialog(date: Date, eventsForDay: List<Event>) {
+        val eventDescriptions = eventsForDay.joinToString("\n- ") { it.description }
+        AlertDialog.Builder(this)
+            .setTitle("Events for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date)}")
+            .setMessage("- $eventDescriptions")
+            .setPositiveButton("Add New Event") { _, _ ->
+                showAddEventDialog(date)
+            }
+            .setNegativeButton("Close", null)
+            .show()
+    }
+
+    private fun showDeleteConfirmationDialog(date: Date, eventsForDay: List<Event>) {
+        AlertDialog.Builder(this)
+            .setTitle("Delete Events")
+            .setMessage("Are you sure you want to delete all events for ${SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date)}?")
+            .setPositiveButton("Delete") { _, _ ->
+                events.removeAll(eventsForDay)
+                saveEvents()
+                updateCalendar()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showAddEventDialog(date: Date) {

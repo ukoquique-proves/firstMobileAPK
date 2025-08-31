@@ -41,11 +41,18 @@
     </LinearLayout>
 
     <GridView
+        android:id="@+id/day_of_week_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="7"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <GridView
         android:id="@+id/calendar_grid"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:numColumns="7"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/day_of_week_grid"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

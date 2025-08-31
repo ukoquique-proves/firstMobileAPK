@@ -4,6 +4,7 @@ color black
 color white
 id calendar_grid
 id date_text
+id day_of_week_grid
 id dismiss_button
 id event_description_text
 id linearLayout
@@ -12,6 +13,7 @@ id next_month
 id prev_month
 layout activity_main
 layout activity_notification
+layout day_of_week_item
 layout grid_item
 mipmap ic_launcher
 mipmap ic_launcher_round

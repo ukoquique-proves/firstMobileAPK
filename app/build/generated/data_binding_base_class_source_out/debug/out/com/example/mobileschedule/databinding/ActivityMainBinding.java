@@ -26,6 +26,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final GridView calendarGrid;
 
   @NonNull
+  public final GridView dayOfWeekGrid;
+
+  @NonNull
   public final LinearLayout linearLayout;
 
   @NonNull
@@ -38,10 +41,11 @@ public final class ActivityMainBinding implements ViewBinding {
   public final ImageView prevMonth;
 
   private ActivityMainBinding(@NonNull ConstraintLayout rootView, @NonNull GridView calendarGrid,
-      @NonNull LinearLayout linearLayout, @NonNull TextView monthYear, @NonNull ImageView nextMonth,
-      @NonNull ImageView prevMonth) {
+      @NonNull GridView dayOfWeekGrid, @NonNull LinearLayout linearLayout,
+      @NonNull TextView monthYear, @NonNull ImageView nextMonth, @NonNull ImageView prevMonth) {
     this.rootView = rootView;
     this.calendarGrid = calendarGrid;
+    this.dayOfWeekGrid = dayOfWeekGrid;
     this.linearLayout = linearLayout;
     this.monthYear = monthYear;
     this.nextMonth = nextMonth;
@@ -81,6 +85,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.day_of_week_grid;
+      GridView dayOfWeekGrid = ViewBindings.findChildViewById(rootView, id);
+      if (dayOfWeekGrid == null) {
+        break missingId;
+      }
+
       id = R.id.linearLayout;
       LinearLayout linearLayout = ViewBindings.findChildViewById(rootView, id);
       if (linearLayout == null) {
@@ -105,8 +115,8 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((ConstraintLayout) rootView, calendarGrid, linearLayout,
-          monthYear, nextMonth, prevMonth);
+      return new ActivityMainBinding((ConstraintLayout) rootView, calendarGrid, dayOfWeekGrid,
+          linearLayout, monthYear, nextMonth, prevMonth);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

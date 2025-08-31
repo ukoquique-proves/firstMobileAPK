@@ -3216,6 +3216,7 @@ id customPanel
 id cut
 id date_picker_actions
 id date_text
+id day_of_week_grid
 id decelerate
 id decelerateAndComplete
 id decor_content_parent
@@ -3697,6 +3698,7 @@ layout abc_tooltip
 layout activity_main
 layout activity_notification
 layout custom_dialog
+layout day_of_week_item
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
 layout design_layout_snackbar
